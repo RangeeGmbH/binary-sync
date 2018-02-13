@@ -1,0 +1,17 @@
+Source: binary-sync
+Maintainer: Rangee GmbH <info@rangee.com>
+Section: utils
+Vcs-Git: https://github.com/shuky19/binary-sync.git
+Vcs-browser: https://github.com/shuky19/binary-sync
+Priority: optional
+Build-Depends: debhelper (>=9)
+Standards-Version: 4.0.0
+
+Package: binary-sync
+Section: utils
+Homepage: https://github.com/essembeh/binary-sync
+Architecture: any
+Priority: optional
+Depends: ${shlibs:Depends}
+Description: Tool to synchronise large binary files
+ binary-sync is a collection of tools to synchronize large binary files between distant systems.
