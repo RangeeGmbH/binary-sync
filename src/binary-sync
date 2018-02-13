@@ -4,6 +4,13 @@ BSDATA=bsdata
 BSAPPLY=bsapply
 BSINFO=bsinfo
 
+
+function echoBold() {
+    local BOLD="\033[1m"
+    local NO_COLOR="\033[0m"
+    echo -e ${BOLD}${1}${NO_COLOR}
+}
+
 source="$1"
 destination="$2"
 
@@ -12,41 +19,41 @@ destinationSum="${destination}.sum"
 
 patch="${source}.patch"
 
-echo "### Update source checksum ${sourceSum}"
-${BSCHECKSUM} --source="${source}" --output="${sourceSum}" || exit 1
+echoBold "### Update source checksum ${sourceSum}"
+${BSCHECKSUM} --target="${source}" --output="${sourceSum}" || exit 1
 echo
 
 if [ ! -e "${destination}" -o ! -e "${destinationSum}" ]; then
-    echo "### Full copy of ${source}"
+    echoBold "### Full copy of ${source}"
     rsync --progress "${source}" "${destination}" || exit 2
     rsync --progress "${sourceSum}" "${destinationSum}" || exit 3
     echo
 
-    echo "### Delete source checksum ${sourceSum}"
+    echoBold "### Delete source checksum ${sourceSum}"
     rm "${sourceSum}"
     exit 0
 fi
 
-echo "### Create patch ${patch}"
-${BSDATA} --source="${source}" --master="${sourceSum}" --remote="${destinationSum}" --output="${patch}" || exit 4
+echoBold "### Create patch ${patch}"
+${BSDATA} --target="${source}" --master="${sourceSum}" --remote="${destinationSum}" --output="${patch}" || exit 4
 echo
 
-echo "### Apply patch ${patch} to ${destination}"
-${BSAPPLY} --source="${destination}" --data="${patch}" || exit 5
+echoBold "### Apply patch ${patch} to ${destination}"
+${BSAPPLY} --target="${destination}" --data="${patch}" || exit 5
 echo
 
-echo "### Update destination checksum ${destinationSum}"
+echoBold "### Update destination checksum ${destinationSum}"
 cp "${sourceSum}" "${destinationSum}"
 echo
 
-echo "### Delete patch ${patch}"
+echoBold "### Delete patch ${patch}"
 rm "${patch}"
 echo
 
-echo "### Delete source checksum ${sourceSum}"
+echoBold "### Delete source checksum ${sourceSum}"
 rm "${sourceSum}"
 echo
 
-# echo "### Checksums"
+# echoBold "### Checksums"
 # md5sum --binary "${source}" "${destination}"
 
